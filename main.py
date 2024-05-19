@@ -1,6 +1,6 @@
 from word_base import word_base
 import random
-from tkinter import Tk, Label, Button, Text, Canvas, WORD, Event
+from tkinter import Tk, Label, Button, Text, Canvas, WORD, Event, messagebox
 
 GREEN = "#9bdeac"
 YELLOW = "#f7f5dd"
@@ -11,9 +11,11 @@ global random_word, seconds, words_correct
 
 def reset():
     global random_word, seconds, words_correct
-    seconds = 10
+    seconds = 60
     words_correct = 0
     random_word = random.sample(word_base, 100)
+    text_field.config(state="normal", bg=GREY)
+    text_field.delete("0.0", "end")
     text_field.config(state="disabled", bg=GREY)
     canvas2.itemconfigure(words_typed, text="", fill=GREEN)
     canvas2.itemconfigure(words_to_type, text=random_word[:5], fill="black")
@@ -26,6 +28,7 @@ def timer():
     start_button.config(state="disabled")
     canvas.itemconfig(timer_text, text=f"{seconds}")
     if seconds == 0:
+        messagebox.showinfo(title="Your result", message=f"{words_correct} words per minute")
         reset()
         start_button.config(state="normal")
     else:
