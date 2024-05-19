@@ -1,17 +1,18 @@
 from word_base import word_base
 import random
-from tkinter import Tk, Label, Button, Text, Canvas, WORD
+from tkinter import Tk, Label, Button, Text, Canvas, WORD, Event
 
 GREEN = "#9bdeac"
 YELLOW = "#f7f5dd"
 GREY = "grey80"
 FONT_NAME = "Courier"
-global random_word, seconds
+global random_word, seconds, words_correct
 
 
 def reset():
-    global random_word, seconds
+    global random_word, seconds, words_correct
     seconds = 10
+    words_correct = 0
     random_word = random.sample(word_base, 100)
     text_field.config(state="disabled", bg=GREY)
     canvas2.itemconfigure(words_typed, text="", fill=GREEN)
@@ -29,6 +30,18 @@ def timer():
         start_button.config(state="normal")
     else:
         canvas.after(1000, timer)
+
+
+def check(event: Event = None) -> None:
+    global words_correct
+    text_input = text_field.get("0.0", "end").split()[-1]
+    if text_input.lower() == random_word[words_correct]:
+        words_correct += 1
+        if words_correct <= 4:
+            canvas2.itemconfigure(words_typed, text=random_word[0:words_correct], fill=GREEN)
+        else:
+            canvas2.itemconfigure(words_typed, text=random_word[words_correct-5:words_correct], fill=GREEN)
+        canvas2.itemconfigure(words_to_type, text=random_word[words_correct: words_correct+5], fill="black")
 
 
 window = Tk()
@@ -54,6 +67,7 @@ canvas2.pack()
 
 # input text field
 text_field = Text(height=5, width=52, wrap=WORD)
+text_field.bind("<KeyRelease>", check)
 text_field.pack(padx=20, pady=10)
 reset()
 
