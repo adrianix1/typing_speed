@@ -1,9 +1,20 @@
+from word_base import word_base
+import random
 from tkinter import Tk, Label, Button, Text, Canvas, WORD
 
 GREEN = "#9bdeac"
 YELLOW = "#f7f5dd"
 GREY = "grey80"
 FONT_NAME = "Courier"
+global random_word
+
+
+def reset():
+    global random_word
+    random_word = random.sample(word_base, 100)
+    text_field.config(state="disabled", bg=GREY)
+    canvas2.itemconfigure(words_typed, text="", fill=GREEN)
+    canvas2.itemconfigure(words_to_type, text=random_word[:5], fill="black")
 
 
 window = Tk()
@@ -11,7 +22,8 @@ window.title("Typedometer")
 window.config(bg=YELLOW)
 
 # info label
-label = Label(text="This is Typedometer - a desktop program that tests Your typing speed.\nPress start and begin typing (You've got one minute). Good Luck!")
+label = Label(text="This is Typedometer - a desktop program that tests Your typing speed.\n"
+                   "Press start and begin typing (You've got one minute). Good Luck!")
 label.config(bg=YELLOW)
 label.pack(padx=20, pady=10)
 
@@ -22,13 +34,14 @@ canvas.pack(pady=10)
 
 # correct typed words
 canvas2 = Canvas(width=400, height=80, bg=YELLOW, highlightthickness=0)
-words_typed = canvas2.create_text(200, 20, text="correct word", fill="black", font=(FONT_NAME, 14, "bold"), width=400)
-words_to_type = canvas2.create_text(200, 60, text="to type", fill="black", font=(FONT_NAME, 14, "bold"), width=400)
+words_typed = canvas2.create_text(200, 20, text="", fill="black", font=(FONT_NAME, 14, "bold"), width=400)
+words_to_type = canvas2.create_text(200, 60, text="", fill="black", font=(FONT_NAME, 14, "bold"), width=400)
 canvas2.pack()
 
 # input text field
 text_field = Text(height=5, width=52, wrap=WORD)
 text_field.pack(padx=20, pady=10)
+reset()
 
 start_button = Button(text="Start")
 start_button.pack(pady=10)
